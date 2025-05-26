@@ -1,0 +1,31 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+env/
+venv/
+.venv/
+
+# Pipenv
+Pipfile.lock
+
+# VS Code settings
+.vscode/
+
+# Database files
+*.sqlite3
+*.db
+
+# macOS and system files
+.DS_Store
+
+# Test coverage
+htmlcov/
+coverage.xml
+*.cover
+.cache
+
+# Logs
+*.log
