@@ -92,6 +92,15 @@ class Magazine:
         return cls.instance_from_db(row) if row else None
     
     @classmethod
+    def find_by_category(cls, category):
+        sql = """
+            SELECT * FROM magazines
+            WHERE category = ?
+        """
+        row = CURSOR.execute(sql, (category,)).fetchone()
+        return cls.instance_from_db(row) if row else None
+    
+    @classmethod
     def get_all_by_category(cls, category):
         sql = """
             SELECT * FROM magazines
@@ -120,7 +129,8 @@ class Magazine:
             LEFT JOIN articles a ON m.magazine_id = a.magazine_id
             GROUP BY m.magazine_id
         """
-        return CURSOR.execute(sql).fetchall()  # Returns list of (name, count)
+        rows = CURSOR.execute(sql).fetchall()
+        return [{'name': row[0], 'article_count': row[1]} for row in rows]
     
     @classmethod
     def most_articles_written(cls):

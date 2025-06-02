@@ -5,7 +5,7 @@ DROP TABLE IF EXISTS magazines;
 
 -- Create authors table
 CREATE TABLE authors (
-    id INTEGER PRIMARY KEY,
+    author_id INTEGER PRIMARY KEY,
     name VARCHAR(255) NOT NULL
 );
 
@@ -19,7 +19,6 @@ CREATE TABLE magazines (
 -- Create articles table
 CREATE TABLE articles (
     article_id INTEGER PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
     title VARCHAR(255) NOT NULL,
     author_id INTEGER,
     magazine_id INTEGER,

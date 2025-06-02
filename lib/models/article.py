@@ -3,16 +3,15 @@ from db.connection import CURSOR, CONN
 class Article:
     all = {}
 
-    def __init__(self, name, title, author_id, magazine_id ,article_id = None):
+    def __init__(self, title, author_id, magazine_id ,article_id = None):
         self.article_id = article_id
-        self.name = name 
         self.title = title
         self.author_id = author_id
         self.magazine_id = magazine_id
 
     def __repr__(self):
         return (
-            f"<Article ID ({self.article_id}): {self.name}, {self.title} " +
+            f"<Article ID ({self.article_id}): {self.title} " +
             f"Author ID ({self.author_id}), Magazine ID ({self.magazine_id})>"
         )
 
@@ -22,7 +21,6 @@ class Article:
         sql = """
             CREATE TABLE IF NOT EXISTS articles (
                 article_id INTEGER PRIMARY KEY,
-                name VARCHAR(255) NOT NULL,
                 title VARCHAR(255) NOT NULL,
                 author_id INTEGER,
                 magazine_id INTEGER,
@@ -45,10 +43,10 @@ class Article:
     #Inserting a new row into the articles table
     def save(self):
         sql = """
-            INSERT INTO articles (name, title, author_id, magazine_id)
-            VALUES (?, ?, ?, ?)
+            INSERT INTO articles (title, author_id, magazine_id)
+            VALUES (?, ?, ?)
         """
-        CURSOR.execute(sql, (self.name, self.title, self.author_id, self.magazine_id))
+        CURSOR.execute(sql, (self.title, self.author_id, self.magazine_id))
         CONN.commit()
 
         self.article_id = CURSOR.lastrowid
@@ -63,12 +61,11 @@ class Article:
         article = cls.all.get(row[0])
 
         if article:
-            article.name = row[1]
-            article.title = row[2]
-            article.author_id = row[3]
-            article.magazine_id = row[4]
+            article.title = row[1]
+            article.author_id = row[2]
+            article.magazine_id = row[3]
         else:
-            article = cls(row[1], row[2], row[3], row[4], article_id=row[0])
+            article = cls(row[1], row[2], row[3], article_id=row[0])
             cls.all[article.article_id] = article
         return article
     
@@ -93,14 +90,6 @@ class Article:
         row = CURSOR.execute(sql, (article_id,)).fetchone()
         return cls.instance_from_db(row) if row else None
     
-    @classmethod
-    def find_by_name(cls, name):
-        sql = """
-            SELECT * FROM articles
-            WHERE name = ?
-        """
-        row = CURSOR.execute(sql, (name,)).fetchone()
-        return cls.instance_from_db(row) if row else None
     
     @classmethod
     def find_by_title(cls, title):
@@ -113,8 +102,8 @@ class Article:
 
     @classmethod
     #Creating a new article record
-    def create(cls, name, title, author_id, magazine_id):
-        article = cls(name, title, author_id, magazine_id)
+    def create(cls, title, author_id, magazine_id):
+        article = cls(title, author_id, magazine_id)
         article.save()
         return article
     
@@ -122,10 +111,10 @@ class Article:
     def update(self):
         sql = """
             UPDATE articles
-            SET name = ?, title = ?, author_id = ?, magazine_id = ?
+            SET title = ?, author_id = ?, magazine_id = ?
             WHERE article_id = ?
         """
-        CURSOR.execute(sql, (self.name, self.title, self.author_id, self.magazine_id, self.article_id))
+        CURSOR.execute(sql, (self.title, self.author_id, self.magazine_id, self.article_id))
         CONN.commit()
 
     #Deleting an article record

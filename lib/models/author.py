@@ -9,6 +9,10 @@ class Author:
     
     def __repr__(self):
         return f"Author ID ({self.author_id}): {self.name}"
+    
+    @property
+    def id(self):
+        return self.author_id
 
     @classmethod
     #Creating the authors table
@@ -155,6 +159,22 @@ class Author:
         """
         rows = CURSOR.execute(sql, (self.author_id,)).fetchall()
         return [row[0] for row in rows]
+    
+    @classmethod
+    def top_author(cls):
+        sql = """
+            SELECT a.author_id, a.name, COUNT(ar.article_id) AS article_count
+            FROM authors a
+            JOIN articles ar ON a.author_id = ar.author_id
+            GROUP BY a.author_id
+            ORDER BY article_count DESC
+            LIMIT 1
+        """
+        row = CURSOR.execute(sql).fetchone()
+        if row:
+            # row[0] = author_id, row[1] = name
+            return cls.find_by_id(row[0])
+        return None
 
     def articles(self):
         #Return a list of articles associated with the current author
